@@ -2,4 +2,4 @@
 
 .gitignore
 
-./config/config_dev.ini
+config/config_dev.ini
