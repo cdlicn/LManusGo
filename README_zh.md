@@ -29,5 +29,7 @@ temperature = 0.8
 [base]
 # 保存文件的路径
 save_path = "./data"
+# 搜索引擎 [baidu, bing]
+search_engine = "bing"
 ```
 

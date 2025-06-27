@@ -28,4 +28,6 @@ temperature = 0.8
 [base]
 # Path to save files  
 save_path = "./data"  
+# search engines [baidu, bing]
+search_engine = "bing"
 ```
