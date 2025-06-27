@@ -30,8 +30,10 @@ func NewLManus() *LManus {
 		tools.DoTerminate{},
 		tools.CurrentDate{},
 		tools.CurrentTime{},
-		tools.SearchWeb{},
 		tools.SaveFile{},
+	}
+	if conf.Base.SearchEngine != "" {
+		toolList = append(toolList, tools.SearchWeb{})
 	}
 
 	opts := []openai.Option{

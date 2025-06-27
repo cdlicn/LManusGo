@@ -8,8 +8,11 @@ import (
 	"time"
 )
 
-func (e *searchEngine) BingSearch(query string) (items []SearchItem, err error) {
+var _ Search = &BingSearch{}
 
+type BingSearch struct{}
+
+func (e *BingSearch) Call(query string) (items []SearchItem, err error) {
 	ctx, cancel := newWork()
 	defer cancel()
 
@@ -60,5 +63,5 @@ func (e *searchEngine) BingSearch(query string) (items []SearchItem, err error) 
 		idx++
 	}
 
-	return items[:idx], nil
+	return items, nil
 }

@@ -6,14 +6,18 @@ import (
 	"log"
 )
 
-type searchEngine struct {
-	engine string
+var SearchEngine Search
+
+type Search interface {
+	Call(query string) (items []SearchItem, err error)
 }
 
-func NewSearchEngine(engine string) *searchEngine {
-	return &searchEngine{
-		engine: engine,
-	}
+func NewBingSearchEngine() {
+	SearchEngine = new(BingSearch)
+}
+
+func NewBaiduSearchEngine() {
+	SearchEngine = new(BaiduSearch)
 }
 
 const (
