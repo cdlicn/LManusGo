@@ -2,39 +2,32 @@ package main
 
 import (
 	"LManusGo/agent"
-	"LManusGo/tools"
 	"fmt"
+	"github.com/sirupsen/logrus"
+	"strings"
 )
 
+// test prompt: 告诉我现在的时间，帮我制定南昌一日游的旅游攻略，并保存下来
+
 func main() {
-	name := "LManus"
-	systemMessage := `
-		You are LManus, a versatile AI assistant designed to solve any task requested by users.
-		You can use various tools to efficiently complete complex requests.
-		Proactively select the most suitable tool or tool combination based on user needs.
-		For complex tasks, you can break down the problem and gradually use different tools to solve it.
-		After using each tool, clearly explain the execution results and suggest the next steps.
-		If you want to stop interaction at any time, use the 'terminate' tool/function call.
-		You only work with a single conversation, and you don't need to ask the user for any action after you end the conversation.
-	`
-	toolList := []tools.Tool{
-		tools.DoTerminate{},
-		tools.CurrentDate{},
-		tools.CurrentTime{},
-		tools.SearchWeb{},
-		tools.SaveFile{},
-	}
-
-	manus := agent.NewLManus(name, systemMessage, toolList)
-
+	manus := agent.NewLManus()
 	for {
-		var userMessage string
-		fmt.Print("enter your question: ")
-		fmt.Scanln(&userMessage)
-		resp, err := manus.Run(userMessage)
+		var prompt string
+		fmt.Print("Enter your prompt:")
+		fmt.Scanln(&prompt)
+
+		prompt = strings.TrimSpace(prompt)
+
+		if prompt == "" {
+			logrus.Warn("Empty prompt provided.")
+			return
+		}
+		logrus.Warn("Processing your request...")
+		resp, err := manus.Run(prompt)
 		if err != nil {
-			panic(err)
+			logrus.Panic(err)
 		}
 		fmt.Println(resp)
+		logrus.Info("Request processing completed.")
 	}
 }

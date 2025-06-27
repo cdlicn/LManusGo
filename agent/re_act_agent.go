@@ -35,7 +35,8 @@ func (agent *ReActAgent) Step() (string, error) {
 		return "", err
 	}
 	if !shouldAct {
-		return "思考完成 - 无需行动", nil
+		agent.State = FINISHED
+		return "thinking is done - no action required", nil
 	}
 	// 行动
 	return agent.Act()

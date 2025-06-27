@@ -3,7 +3,7 @@ package agent
 import (
 	"LManusGo/message"
 	"errors"
-	"fmt"
+	"github.com/sirupsen/logrus"
 	"github.com/tmc/langchaingo/llms"
 	"strconv"
 	"strings"
@@ -57,7 +57,7 @@ func (agent *BaseAgent) Run(userMessage string) (string, error) {
 
 	// 清理资源
 	defer func() {
-		// 3. 清理资源
+		// TODO 清理资源
 		agent.Cleanup()
 	}()
 
@@ -68,7 +68,7 @@ func (agent *BaseAgent) Run(userMessage string) (string, error) {
 	for i := 0; i < agent.MaxSteps && agent.State != FINISHED; i++ {
 		stepNo := i + 1
 		agent.CurrentStep = stepNo
-		fmt.Printf("Executing step %d/%d\n", stepNo, agent.MaxSteps)
+		logrus.Printf("Executing step %d/%d", stepNo, agent.MaxSteps)
 
 		// 执行
 		stepResult, err := agent.Step()
@@ -80,7 +80,7 @@ func (agent *BaseAgent) Run(userMessage string) (string, error) {
 	}
 	if agent.CurrentStep >= agent.MaxSteps {
 		agent.State = FINISHED
-		fmt.Println("Terminated: Reach max steps (" + strconv.Itoa(agent.MaxSteps) + ")")
+		logrus.Info("Terminated: Reach max steps (" + strconv.Itoa(agent.MaxSteps) + ")")
 		results = append(results, "Terminated: Reach max steps ("+strconv.Itoa(agent.MaxSteps)+")")
 	}
 

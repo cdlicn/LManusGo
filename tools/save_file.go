@@ -49,6 +49,14 @@ func (t SaveFile) Call(ctx context.Context, input string) string {
 	filePath := config.Conf.SavePath + "\\" + mp["fileName"]
 	content := mp["content"]
 
+	// 判断文件是否存在
+	if _, err := os.Stat(filePath); os.IsExist(err) {
+		err = os.Remove(filePath)
+		if err != nil {
+			return "there are duplicate file names, failed to delete file, try again with a different file name"
+		}
+	}
+
 	err = os.WriteFile(filePath, []byte(content), 0644)
 	if err != nil {
 		return "failed to save file" + err.Error()

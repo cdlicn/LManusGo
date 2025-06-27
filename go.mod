@@ -5,6 +5,7 @@ go 1.23
 require (
 	github.com/PuerkitoBio/goquery v1.8.1
 	github.com/chromedp/chromedp v0.13.7
+	github.com/sirupsen/logrus v1.9.3
 	github.com/tmc/langchaingo v0.1.13
 	gopkg.in/ini.v1 v1.67.0
 )
