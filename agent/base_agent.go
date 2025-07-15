@@ -21,12 +21,14 @@ type BaseAgent struct {
 	CurrentStep   int
 	MaxSteps      int
 	LLM           llms.Model
+	MaxTokens     int
+	Temperature   float64
 	MessageList   []llms.MessageContent
 	ReActFunc
 }
 
 // NewBaseAgent 创建基础代理
-func NewBaseAgent(name, systemMessage string, llm llms.Model, maxSteps int) *BaseAgent {
+func NewBaseAgent(name, systemMessage string, llm llms.Model, maxSteps, maxTokens int, temperature float64) *BaseAgent {
 	systemMessage = strings.TrimSpace(systemMessage)
 	return &BaseAgent{
 		Name:          name,
@@ -34,6 +36,8 @@ func NewBaseAgent(name, systemMessage string, llm llms.Model, maxSteps int) *Bas
 		State:         IDLE,
 		MaxSteps:      maxSteps,
 		LLM:           llm,
+		MaxTokens:     maxTokens,
+		Temperature:   temperature,
 		MessageList:   make([]llms.MessageContent, 0),
 	}
 }

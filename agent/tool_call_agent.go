@@ -14,25 +14,23 @@ import (
 type ToolCallAgent struct {
 	*ReActAgent
 	AvailableTools       []llms.Tool
-	Temperature          float64
 	ToolsManager         tools.ToolsMap
 	ToolCallChatResponse *llms.ContentChoice
 }
 
 // NewToolCallAgent 创建新的ReActAgent
-func NewToolCallAgent(name, systemMessage string, temperature float64, llm llms.Model, maxSteps int, toolList []tools.Tool) *ToolCallAgent {
+func NewToolCallAgent(reactAgent *ReActAgent, toolList []tools.Tool) *ToolCallAgent {
 	mp, err := tools.NewToolsMap(toolList...)
 	if err != nil {
-		panic(err)
+		logrus.Panicln(err)
 	}
 	var availableTools []llms.Tool
 	for _, tool := range toolList {
 		availableTools = append(availableTools, tool.GetTool())
 	}
 	agent := &ToolCallAgent{
-		ReActAgent:     NewReActAgent(name, systemMessage, llm, maxSteps),
+		ReActAgent:     reactAgent,
 		AvailableTools: availableTools,
-		Temperature:    temperature,
 		ToolsManager:   mp,
 	}
 	agent.ToolCallFunc = agent
@@ -94,12 +92,15 @@ func (agent *ToolCallAgent) Act() (string, error) {
 	ctx := context.Background()
 	options := llms.CallOptions{
 		Tools:       agent.AvailableTools,
+		MaxTokens:   agent.BaseAgent.MaxTokens,
 		Temperature: agent.Temperature,
 	}
 	content, err := agent.LLM.GenerateContent(ctx, agent.MessageList, llms.WithOptions(options))
 	if err != nil {
 		return "", errors.New(fmt.Sprintf("%s's thought process is running into a problem: %s", agent.Name, err.Error()))
 	}
+
+	//logrus.Infoln(content)
 
 	var result string
 	if len(content.Choices[0].ToolCalls) == 0 {
@@ -125,5 +126,8 @@ func (agent *ToolCallAgent) work(toolCall llms.ToolCall, wg *sync.WaitGroup, sem
 	if err != nil {
 		res = err.Error()
 	}
+
+	logrus.Infoln("tool call: %s, tool response: %s", toolCall.FunctionCall.Name, res)
+
 	agent.MessageList = append(agent.MessageList, message.ToolResponseMessage(toolCall.ID, toolCall.FunctionCall.Name, res))
 }

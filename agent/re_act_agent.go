@@ -2,7 +2,6 @@ package agent
 
 import (
 	"fmt"
-	"github.com/tmc/langchaingo/llms"
 )
 
 type ToolCallFunc interface {
@@ -19,9 +18,9 @@ type ReActAgent struct {
 }
 
 // NewReActAgent 创建新的ReActAgent
-func NewReActAgent(name, systemMessage string, llm llms.Model, maxSteps int) *ReActAgent {
+func NewReActAgent(baseAgent *BaseAgent) *ReActAgent {
 	agent := &ReActAgent{
-		BaseAgent: NewBaseAgent(name, systemMessage, llm, maxSteps),
+		BaseAgent: baseAgent,
 	}
 	agent.BaseAgent.ReActFunc = agent
 	return agent
