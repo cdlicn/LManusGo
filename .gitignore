@@ -3,3 +3,5 @@
 /.gitignore
 
 /config/config_dev.ini
+
+/data/

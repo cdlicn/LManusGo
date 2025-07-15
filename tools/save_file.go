@@ -3,7 +3,6 @@ package tools
 import (
 	"LManusGo/config"
 	"context"
-	"encoding/json"
 	"github.com/tmc/langchaingo/llms"
 	"os"
 )
@@ -40,10 +39,9 @@ func (t SaveFile) GetTool() llms.Tool {
 }
 
 func (t SaveFile) Call(ctx context.Context, input string) string {
-	var mp map[string]string
-	err := json.Unmarshal([]byte(input), &mp)
+	mp, err := unmarshallJson(input)
 	if err != nil {
-		return "there was an error parsing the input " + err.Error()
+		return err.Error()
 	}
 
 	filePath := config.Conf.SavePath + "\\" + mp["fileName"]

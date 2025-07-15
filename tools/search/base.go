@@ -9,6 +9,7 @@ import (
 var SearchEngine Search
 
 type Search interface {
+	// 使用搜索引擎搜索
 	Call(query string) (items []SearchItem, err error)
 }
 

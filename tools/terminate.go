@@ -24,5 +24,5 @@ func (t DoTerminate) GetTool() llms.Tool {
 }
 
 func (t DoTerminate) Call(ctx context.Context, input string) string {
-	return "任务结束"
+	return "mission ended"
 }

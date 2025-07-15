@@ -5,6 +5,7 @@ import (
 	"github.com/chromedp/chromedp"
 	"net/url"
 	"strings"
+	"time"
 )
 
 var _ Search = &BaiduSearch{}
@@ -21,7 +22,7 @@ func (e *BaiduSearch) Call(query string) (items []SearchItem, err error) {
 		chromedp.WaitVisible("div#content_left div.result"),
 		chromedp.WaitReady("div#content_left div.result"),
 
-		//chromedp.Sleep(5*time.Second),
+		chromedp.Sleep(5*time.Second),
 
 		chromedp.Evaluate(`
         Array.from(document.querySelectorAll('div#content_left div.result'))

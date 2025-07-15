@@ -2,6 +2,7 @@ package tools
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"github.com/tmc/langchaingo/llms"
 )
@@ -30,4 +31,13 @@ func (toolsMap ToolsMap) ExecuteTool(toolName string, input string) (res string,
 		return "", errors.New("tool not found")
 	}
 	return toolsMap[toolName].Call(context.Background(), input), nil
+}
+
+func unmarshallJson(input string) (map[string]string, error) {
+	var mp map[string]string
+	err := json.Unmarshal([]byte(input), &mp)
+	if err != nil {
+		return nil, errors.New("there was an error parsing the input " + err.Error())
+	}
+	return mp, nil
 }

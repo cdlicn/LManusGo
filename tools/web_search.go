@@ -43,6 +43,9 @@ func (t SearchWeb) Call(ctx context.Context, input string) string {
 	}
 
 	items, err := search.SearchEngine.Call(mp["query"])
+	if err != nil {
+		return "Got an error when using WebSearch with the error:" + err.Error() + ". Please try again"
+	}
 
 	return fmt.Sprintln(items)
 }

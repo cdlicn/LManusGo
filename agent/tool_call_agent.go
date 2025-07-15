@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"github.com/sirupsen/logrus"
 	"github.com/tmc/langchaingo/llms"
+	"strings"
 	"sync"
 )
 
@@ -80,11 +81,12 @@ func (agent *ToolCallAgent) Act() (string, error) {
 	// 调用工具
 	const maxConcurrent = 3
 	var wg sync.WaitGroup
+	var resList = make([]string, 0)
 	sem := make(chan struct{}, maxConcurrent)
 
 	for _, toolCall := range agent.ToolCallChatResponse.ToolCalls {
 		wg.Add(1)
-		agent.work(toolCall, &wg, sem)
+		resList = append(resList, agent.work(toolCall, &wg, sem))
 	}
 
 	wg.Wait()
@@ -107,13 +109,13 @@ func (agent *ToolCallAgent) Act() (string, error) {
 		agent.State = FINISHED
 		result = content.Choices[0].Content
 	} else {
-		result = "next call the tool" + content.Choices[0].ToolCalls[0].FunctionCall.Name
+		result = strings.Join(resList, ";")
 	}
 	//fmt.Println(result)
 	return result, nil
 }
 
-func (agent *ToolCallAgent) work(toolCall llms.ToolCall, wg *sync.WaitGroup, sem chan struct{}) {
+func (agent *ToolCallAgent) work(toolCall llms.ToolCall, wg *sync.WaitGroup, sem chan struct{}) string {
 	sem <- struct{}{}
 	defer func() {
 		<-sem
@@ -127,7 +129,9 @@ func (agent *ToolCallAgent) work(toolCall llms.ToolCall, wg *sync.WaitGroup, sem
 		res = err.Error()
 	}
 
-	logrus.Infoln("tool call: %s, tool response: %s", toolCall.FunctionCall.Name, res)
+	logrus.Infof("tool call: %s, tool response: %s\n", toolCall.FunctionCall.Name, res)
 
 	agent.MessageList = append(agent.MessageList, message.ToolResponseMessage(toolCall.ID, toolCall.FunctionCall.Name, res))
+
+	return fmt.Sprintf("tool call: %s, tool response: %s\n", toolCall.FunctionCall.Name, res)
 }

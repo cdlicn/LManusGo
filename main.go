@@ -2,25 +2,33 @@ package main
 
 import (
 	"LManusGo/agent"
+	"bufio"
 	"fmt"
 	"github.com/sirupsen/logrus"
+	"os"
 	"strings"
 	"time"
 )
 
-// test prompt: 告诉我现在的时间，帮我制定南昌一日游的旅游攻略，并保存下来
+// test prompt 1: I need to do a final assignment for the student management system, help me generate a simple demo, save the code locally, and ask for the python language.
+// test prompt 2: I would like to travel to Beijing in the near future and help me designate a travel guide and keep the strategy locally.
 
 func main() {
-	manus := agent.NewLManus()
 	for {
+		manus := agent.NewLManus()
 		var prompt string
-		fmt.Print("Enter your prompt:")
-		_, err := fmt.Scanln(&prompt)
-		if err != nil {
-			logrus.Panic("scanln failed:", err.Error())
+		fmt.Print("Enter your prompt (or 'exit' to quit): ")
+		scanner := bufio.NewScanner(os.Stdin)
+
+		if scanner.Scan() {
+			prompt = scanner.Text()
 		}
 
 		prompt = strings.TrimSpace(prompt)
+
+		if prompt == "exit" {
+			break
+		}
 
 		if prompt == "" {
 			logrus.Panic("empty prompt provided.")

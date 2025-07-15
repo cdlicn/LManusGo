@@ -1,7 +1,7 @@
 package agent
 
 import (
-	"fmt"
+	"github.com/tmc/langchaingo/llms"
 )
 
 type ToolCallFunc interface {
@@ -43,6 +43,7 @@ func (agent *ReActAgent) Step() (string, error) {
 
 // Cleanup 清理方法
 func (agent *ReActAgent) Cleanup() {
-	// TODO Additional cleanup for MyAgent
-	fmt.Println("Clean Up")
+	agent.BaseAgent.MessageList = make([]llms.MessageContent, 0)
+	agent.State = IDLE
+	agent.CurrentStep = 0
 }

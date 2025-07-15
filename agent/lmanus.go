@@ -33,6 +33,8 @@ func NewLManus() *LManus {
 		tools.CurrentDate{},
 		tools.CurrentTime{},
 		tools.SaveFile{},
+		tools.AccessURL{},
+		tools.AskHuman{},
 	}
 
 	// 搜索引擎
